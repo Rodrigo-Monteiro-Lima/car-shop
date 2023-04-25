@@ -7,9 +7,13 @@ import CarValidation from '../Services/validations/carValidations';
 const routes = Router();
 const carModel = new CarODM();
 const carValidation = new CarValidation();
-const carSevice = new CarService(carModel, carValidation);
-const carController = new CarController(carSevice);
+const carService = new CarService(carModel, carValidation);
+const carController = new CarController(carService);
 
 routes.post('/', carController.create);
+
+routes.get('/', carController.getAll);
+
+routes.get('/:id', carController.getById);
 
 export default routes;

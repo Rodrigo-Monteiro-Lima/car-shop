@@ -3,4 +3,6 @@ import ICar from './ICar';
 
 export default interface ICarService {
   create(car: ICar): Promise<Car | null>;
+  getAll(): Promise<Car[]>;
+  getById(i: string): Promise<Car | null>;
 }
