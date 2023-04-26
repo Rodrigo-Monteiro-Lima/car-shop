@@ -29,7 +29,5 @@ export default class CarValidation implements ICarValidation {
         throw new BadRequestException('status must be a boolean');
       }
     });
-    // const { error } = carSchema.validate(car);
-    // if (error) throw new BadRequestException(error.message);
   };
 }
