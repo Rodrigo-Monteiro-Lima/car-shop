@@ -35,4 +35,12 @@ export default class CarService implements ICarService {
     if (!car) throw new NotFoundException('Car not found');
     return this.#createCarDomain(car);
   };
+
+  update = async (_id: string, car: ICar) => {
+    if (!isValidObjectId(_id)) throw new UnprocessableContentExeception('Invalid mongo id');
+    this.#validation.validateNewCar(car);
+    const updatedCar = await this.#model.update(_id, car);
+    if (!updatedCar) throw new NotFoundException('Car not found');
+    return this.#createCarDomain(updatedCar);
+  };
 }

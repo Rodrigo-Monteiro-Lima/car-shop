@@ -3,6 +3,7 @@ import {
   models,
   Schema,
   model,
+  UpdateQuery,
 } from 'mongoose';
 
 abstract class AbstractODM<T> {
@@ -21,6 +22,12 @@ abstract class AbstractODM<T> {
   getAll = async (): Promise<T[]> => this.model.find();
 
   getById = async (id: string): Promise<T | null> => this.model.findById(id);
+
+  update = async (_id: string, obj: T): Promise<T | null> => this.model.findByIdAndUpdate(
+    { _id },
+    { ...obj } as UpdateQuery<T>,
+    { new: true },
+  );
 }
 
 export default AbstractODM;

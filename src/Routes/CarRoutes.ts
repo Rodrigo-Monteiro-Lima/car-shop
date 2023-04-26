@@ -16,4 +16,6 @@ routes.get('/', carController.getAll);
 
 routes.get('/:id', carController.getById);
 
+routes.put('/:id', carController.update);
+
 export default routes;
