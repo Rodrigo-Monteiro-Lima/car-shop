@@ -14,6 +14,10 @@ import {
 
 chai.use(chaiHtpp);
 
+const invalidErrorId = 'Should return status 422 when id is invalid';
+const invalidIdUrl = '/cars/12312312321';
+const invalidMongoId = 'Invalid mongo id';
+
 describe('Testing car controller', function () {
   afterEach(function () {
     sinon.restore();
@@ -25,10 +29,10 @@ describe('Testing car controller', function () {
       expect(response.status).to.be.equal(201);
       expect(response.body).to.be.deep.equal(carOutput);
     });
-    it('Should return status 404 when any field is missing', async function () {
+    it('Should return status 400 when any field is missing', async function () {
       const response = await chai.request(app).post('/cars').send(invalidCarInput);
       expect(response.status).to.be.equal(400);
-      expect(response.body).to.be.deep.equal({ message: 'model is required' });
+      expect(response.body).to.be.deep.equal({ message: '"model" is required' });
     });
   });
   describe('Listing cars', function () {
@@ -40,11 +44,19 @@ describe('Testing car controller', function () {
     });
   });
   describe('Listing a car', function () {
+    afterEach(function () {
+      sinon.restore();
+    });
     it('Should return status 200 and car', async function () {
       sinon.stub(Model, 'findById').resolves(carOutput);
       const response = await chai.request(app).get(`/cars/${id}`);
       expect(response.status).to.be.equal(200);
       expect(response.body).to.be.deep.equal(carOutput);
+    });
+    it(invalidErrorId, async function () {
+      const response = await chai.request(app).get(invalidIdUrl);
+      expect(response.status).to.be.equal(422);
+      expect(response.body).to.be.deep.equal({ message: invalidMongoId });
     });
   });
   describe('Updating a car', function () {
@@ -54,12 +66,22 @@ describe('Testing car controller', function () {
       expect(response.status).to.be.equal(200);
       expect(response.body).to.be.deep.equal(updateCar);
     });
+    it(invalidErrorId, async function () {
+      const response = await chai.request(app).put(invalidIdUrl).send(updatedCarInput);
+      expect(response.status).to.be.equal(422);
+      expect(response.body).to.be.deep.equal({ message: invalidMongoId });
+    });
   });
   describe('Deleting a car', function () {
     it('Should return status 204', async function () {
       sinon.stub(Model, 'findByIdAndDelete').resolves(updateCar);
       const response = await chai.request(app).delete(`/cars/${id}`);
       expect(response.status).to.be.equal(204);
+    });
+    it(invalidErrorId, async function () {
+      const response = await chai.request(app).delete(invalidIdUrl);
+      expect(response.status).to.be.equal(422);
+      expect(response.body).to.be.deep.equal({ message: invalidMongoId });
     });
   });
 });

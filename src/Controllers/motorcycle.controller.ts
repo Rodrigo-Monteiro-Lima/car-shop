@@ -20,13 +20,9 @@ export default class MotorcycleController {
     }
   };
 
-  getAll: RequestHandler = async (_req, res, next) => {
-    try {
-      const motorcycles = await this.#service.getAll();
-      return res.status(StatusCodes.OK).json(motorcycles);      
-    } catch (error) {
-      return next(error);
-    }
+  getAll: RequestHandler = async (_req, res) => {
+    const motorcycles = await this.#service.getAll();
+    return res.status(StatusCodes.OK).json(motorcycles);      
   };
 
   getById: RequestHandler = async (req, res, next) => {
