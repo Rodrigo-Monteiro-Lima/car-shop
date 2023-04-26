@@ -10,7 +10,9 @@ import {
   carOutput, 
   carOutputWithoutStatus, 
   cars, 
-  id } from '../../mocks/car.mock';
+  id,
+  updateCar,
+  updatedCarInput } from '../../mocks/car.mock';
 
 const model = new CarODM();
 const validation = new CarValidation();
@@ -42,6 +44,13 @@ describe('Testing Car service', function () {
       sinon.stub(Model, 'findById').resolves(carOutput);
       const result = await service.getById(id);
       expect(result).to.be.deep.equal(carOutput);
+    });
+  });
+  describe('Updating a car', function () {
+    it('Should return the updated car', async function () {
+      sinon.stub(Model, 'findByIdAndUpdate').resolves(updateCar);
+      const result = await service.update(id, updatedCarInput);
+      expect(result).to.be.deep.equal(updateCar);
     });
   });
   afterEach(function () {
