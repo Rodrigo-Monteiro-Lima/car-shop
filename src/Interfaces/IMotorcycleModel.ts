@@ -5,4 +5,5 @@ export default interface IMotorcycleModel {
   getAll(): Promise<IMotorcycle[]>;
   getById(i: string): Promise<IMotorcycle | null>;
   update(i: string, c: IMotorcycle): Promise<IMotorcycle | null>;
+  delete(i: string): Promise<IMotorcycle | null>;
 }

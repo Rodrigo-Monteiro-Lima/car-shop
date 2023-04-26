@@ -16,6 +16,14 @@ export default class MotorcycleService implements IMotorcycleService {
     this.#validation = validation;
   }
 
+  #validateId = (_id: string) => {
+    if (!isValidObjectId(_id)) throw new UnprocessableContentExeception('Invalid mongo id');
+  };
+
+  #validateMotorcycle = (car: IMotorcycle | null) => {
+    if (!car) throw new NotFoundException('Motorcycle not found');
+  };
+
   #createMotorcycleDomain = (motorcycle: IMotorcycle): Motorcycle => new Motorcycle(motorcycle);
 
   create = async (motorcycle: IMotorcycle) => {
@@ -30,17 +38,23 @@ export default class MotorcycleService implements IMotorcycleService {
   };
 
   getById = async (_id: string) => {
-    if (!isValidObjectId(_id)) throw new UnprocessableContentExeception('Invalid mongo id');
+    this.#validateId(_id);
     const motorcycle = await this.#model.getById(_id);
-    if (!motorcycle) throw new NotFoundException('Motorcycle not found');
-    return this.#createMotorcycleDomain(motorcycle);
+    this.#validateMotorcycle(motorcycle);
+    return this.#createMotorcycleDomain(motorcycle as IMotorcycle);
   };
 
   update = async (_id: string, motorcycle: IMotorcycle) => {
-    if (!isValidObjectId(_id)) throw new UnprocessableContentExeception('Invalid mongo id');
+    this.#validateId(_id);
     this.#validation.validateNewMotorcycle(motorcycle);
     const updatedMotorcycle = await this.#model.update(_id, motorcycle);
-    if (!updatedMotorcycle) throw new NotFoundException('Motorcycle not found');
-    return this.#createMotorcycleDomain(updatedMotorcycle);
+    this.#validateMotorcycle(updatedMotorcycle);
+    return this.#createMotorcycleDomain(updatedMotorcycle as IMotorcycle);
+  };
+
+  delete = async (_id: string) => {
+    this.#validateId(_id);
+    const deletedMotorcycle = await this.#model.delete(_id);
+    this.#validateMotorcycle(deletedMotorcycle);
   };
 }

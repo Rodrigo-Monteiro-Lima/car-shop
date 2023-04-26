@@ -6,4 +6,5 @@ export default interface ICarService {
   getAll(): Promise<Car[]>;
   getById(i: string): Promise<Car | null>;
   update(i: string, c: ICar): Promise<Car>;
+  delete(i: string): Promise<void>;
 }

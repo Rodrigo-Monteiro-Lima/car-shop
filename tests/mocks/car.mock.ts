@@ -49,9 +49,23 @@ const updateCar = { id, ...updatedCarInput };
 
 const cars: Car[] = [carOutput, carOutputWithoutStatus];
 
+const invalidCarInput = {
+  year: 2002,
+  color: 'Black',
+  buyValue: 15,
+  status: true,
+  doorsQty: 4,
+  seatsQty: 5,
+};
+
 export {
   carInput,
   carOutput,
   carOutputWithoutStatus,
-  carInputWithoutStatus, cars, id, updateCar, updatedCarInput,
+  carInputWithoutStatus, 
+  cars, 
+  id, 
+  updateCar, 
+  updatedCarInput,
+  invalidCarInput,
 };

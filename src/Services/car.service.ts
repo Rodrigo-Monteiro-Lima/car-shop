@@ -18,6 +18,14 @@ export default class CarService implements ICarService {
 
   #createCarDomain = (car: ICar): Car => new Car(car);
 
+  #validateId = (_id: string) => {
+    if (!isValidObjectId(_id)) throw new UnprocessableContentExeception('Invalid mongo id');
+  };
+
+  #validateCar = (car: ICar | null) => {
+    if (!car) throw new NotFoundException('Car not found');
+  };
+
   create = async (car: ICar) => {
     this.#validation.validateNewCar(car);
     const newCar = await this.#model.create(car);
@@ -30,17 +38,23 @@ export default class CarService implements ICarService {
   };
 
   getById = async (_id: string) => {
-    if (!isValidObjectId(_id)) throw new UnprocessableContentExeception('Invalid mongo id');
+    this.#validateId(_id);
     const car = await this.#model.getById(_id);
-    if (!car) throw new NotFoundException('Car not found');
-    return this.#createCarDomain(car);
+    this.#validateCar(car);
+    return this.#createCarDomain(car as ICar);
   };
 
   update = async (_id: string, car: ICar) => {
-    if (!isValidObjectId(_id)) throw new UnprocessableContentExeception('Invalid mongo id');
+    this.#validateId(_id);
     this.#validation.validateNewCar(car);
     const updatedCar = await this.#model.update(_id, car);
-    if (!updatedCar) throw new NotFoundException('Car not found');
-    return this.#createCarDomain(updatedCar);
+    this.#validateCar(updatedCar);
+    return this.#createCarDomain(updatedCar as ICar);
+  };
+
+  delete = async (_id: string) => {
+    this.#validateId(_id);
+    const deletedCar = await this.#model.delete(_id);
+    this.#validateCar(deletedCar);
   };
 }

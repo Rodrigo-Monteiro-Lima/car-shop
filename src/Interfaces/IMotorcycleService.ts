@@ -6,4 +6,5 @@ export default interface IMotorcycleService {
   getAll(): Promise<(Motorcycle | null)[]>;
   getById(i: string): Promise<Motorcycle | null>
   update(i: string, m: IMotorcycle): Promise<Motorcycle | null>
+  delete(i: string): Promise<void>;
 }
