@@ -16,4 +16,6 @@ routes.get('/', motorcycleController.getAll);
 
 routes.get('/:id', motorcycleController.getById);
 
+routes.put('/:id', motorcycleController.update);
+
 export default routes;

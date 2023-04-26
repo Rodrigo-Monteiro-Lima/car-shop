@@ -16,11 +16,6 @@ export default class MotorcycleService implements IMotorcycleService {
     this.#validation = validation;
   }
 
-  update(i: string, m: IMotorcycle): Promise<Motorcycle | null> {
-    console.log(i, m);
-    throw new Error('Method not implemented.');
-  }
-
   #createMotorcycleDomain = (motorcycle: IMotorcycle): Motorcycle => new Motorcycle(motorcycle);
 
   create = async (motorcycle: IMotorcycle) => {
@@ -39,5 +34,13 @@ export default class MotorcycleService implements IMotorcycleService {
     const motorcycle = await this.#model.getById(_id);
     if (!motorcycle) throw new NotFoundException('Motorcycle not found');
     return this.#createMotorcycleDomain(motorcycle);
+  };
+
+  update = async (_id: string, motorcycle: IMotorcycle) => {
+    if (!isValidObjectId(_id)) throw new UnprocessableContentExeception('Invalid mongo id');
+    this.#validation.validateNewMotorcycle(motorcycle);
+    const updatedMotorcycle = await this.#model.update(_id, motorcycle);
+    if (!updatedMotorcycle) throw new NotFoundException('Motorcycle not found');
+    return this.#createMotorcycleDomain(updatedMotorcycle);
   };
 }
