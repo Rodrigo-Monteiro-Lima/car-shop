@@ -1,8 +1,11 @@
+import { isValidObjectId } from 'mongoose';
 import IMotorcycleModel from '../Interfaces/IMotorcycleModel';
 import IMotorcycle from '../Interfaces/IMotorcycle';
 import Motorcycle from '../Domains/Motorcycle';
 import IMotorcycleValidation from '../Interfaces/IMotorcycleValidation';
 import IMotorcycleService from '../Interfaces/IMotorcycleService';
+import UnprocessableContentExeception from '../errors/UnprocessableContentExeception';
+import NotFoundException from '../errors/NotFoundException';
 
 export default class MotorcycleService implements IMotorcycleService {
   #model: IMotorcycleModel;
@@ -12,13 +15,7 @@ export default class MotorcycleService implements IMotorcycleService {
     this.#model = model;
     this.#validation = validation;
   }
-  getAll(): Promise<(Motorcycle | null)[]> {
-    throw new Error('tbd');
-  }
-  getById(i: string): Promise<Motorcycle | null> {
-    console.log(i);
-    throw new Error('Method not implemented.');
-  }
+
   update(i: string, m: IMotorcycle): Promise<Motorcycle | null> {
     console.log(i, m);
     throw new Error('Method not implemented.');
@@ -30,5 +27,17 @@ export default class MotorcycleService implements IMotorcycleService {
     this.#validation.validateNewMotorcycle(motorcycle);
     const newMotorcycle = await this.#model.create(motorcycle);
     return this.#createMotorcycleDomain(newMotorcycle);
+  };
+
+  getAll = async () => {
+    const motorcycles = await this.#model.getAll();
+    return motorcycles.map((motorcycle) => this.#createMotorcycleDomain(motorcycle));
+  };
+
+  getById = async (_id: string) => {
+    if (!isValidObjectId(_id)) throw new UnprocessableContentExeception('Invalid mongo id');
+    const motorcycle = await this.#model.getById(_id);
+    if (!motorcycle) throw new NotFoundException('Motorcycle not found');
+    return this.#createMotorcycleDomain(motorcycle);
   };
 }
